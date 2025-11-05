@@ -12,8 +12,7 @@ namespace bobesponja2._0.ViewModels
 {
     public class UsuarioViewModel : BaseViewModel
     {
-        // Camada de serviço que conversa com o SQLite
-        UsuarioService usuarioService = new UsuarioService();
+        DataBaseService dataBaseService = new DataBaseService();
 
         // Propriedades da tela
         private int _id;
@@ -117,7 +116,7 @@ namespace bobesponja2._0.ViewModels
                 Tipo = TipoUsuario == "Administrador" ? Usuario.TipoUsuario.Administrador : Usuario.TipoUsuario.Cliente
             };
 
-            int result = await usuarioService.SalvarUsuario(usuario);
+            int result = await dataBaseService.AddUsuarioAsync(usuario);
 
             if (result > 0)
             {
@@ -142,7 +141,7 @@ namespace bobesponja2._0.ViewModels
 
             try
             {
-                var usuario = await usuarioService.ValidarLogin(Email, Senha);
+                var usuario = await dataBaseService.GetUsuarioByEmailSenhaAsync(Email, Senha);
 
                 if (usuario == null)
                 {
