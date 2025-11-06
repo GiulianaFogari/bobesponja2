@@ -24,6 +24,7 @@ namespace bobesponja2._0.Services
             await _db.CreateTableAsync<Usuario>();
             await _db.CreateTableAsync<Item>();
             await _db.CreateTableAsync<Pedido>();
+            await _db.CreateTableAsync<Historico>();
         }
 
         public async Task<int> AddUsuarioAsync(Usuario usuario)
@@ -63,7 +64,6 @@ namespace bobesponja2._0.Services
             return await _db.Table<Item>().ToListAsync();
         }
 
-     
         public async Task<int> AddPedidoAsync(Pedido pedido)
         {
             return await _db.InsertAsync(pedido);
@@ -78,6 +78,27 @@ namespace bobesponja2._0.Services
         {
             return await _db.Table<Pedido>()
                 .Where(pedido => pedido.UsuarioId == usuarioId)
+                .ToListAsync();
+        }
+
+        // Métodos para o Histórico
+        public async Task<int> AddHistoricoAsync(Historico historico)
+        {
+            return await _db.InsertAsync(historico);
+        }
+
+        public async Task<List<Historico>> GetHistoricoAsync()
+        {
+            return await _db.Table<Historico>()
+                .OrderByDescending(h => h.DataHora)
+                .ToListAsync();
+        }
+
+        public async Task<List<Historico>> GetHistoricoByUsuarioAsync(int usuarioId)
+        {
+            return await _db.Table<Historico>()
+                .Where(h => h.UsuarioId == usuarioId)
+                .OrderByDescending(h => h.DataHora)
                 .ToListAsync();
         }
     }

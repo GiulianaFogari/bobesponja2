@@ -84,12 +84,14 @@ namespace bobesponja2._0.ViewModels
         // Commands
         public ICommand CadastrarCommand { get; set; }
         public ICommand LoginCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
 
         // Construtor
         public UsuarioViewModel()
         {
             CadastrarCommand = new Command(async () => await Cadastrar());
             LoginCommand = new Command(async () => await Login());
+            LogoutCommand = new Command(Logout);
         }
 
         // Método de cadastro
@@ -105,7 +107,6 @@ namespace bobesponja2._0.ViewModels
                 return;
             }
 
-            // Ensure the correct namespace is used for the Usuario type
             Usuario usuario = new Usuario
             {
                 Nome = Nome,
@@ -121,7 +122,7 @@ namespace bobesponja2._0.ViewModels
             if (result > 0)
             {
                 await Application.Current.MainPage.DisplayAlert("Sucesso", "Usuário cadastrado com sucesso!", "OK");
-                await Application.Current.MainPage.Navigation.PopAsync(); // Volta para a tela de login
+                await Application.Current.MainPage.Navigation.PopAsync();
             }
             else
             {
@@ -132,7 +133,6 @@ namespace bobesponja2._0.ViewModels
         // Método de login
         private async Task Login()
         {
-            // Validar campos de login
             if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Senha))
             {
                 await Application.Current.MainPage.DisplayAlert("Erro", "Preencha o email e a senha!", "OK");
@@ -149,22 +149,29 @@ namespace bobesponja2._0.ViewModels
                     return;
                 }
 
+                //Salva o usuário logado no singleton
+                UsuarioAtual.Instance.SetUsuario(usuario);
+
                 // Navegação baseada no tipo do usuário
-                if (usuario.Tipo == Usuario.TipoUsuario.Administrador)
+                if (UsuarioAtual.Instance.IsAdmin)
                 {
-                    // TODO: Implementar navegação para página de administrador
-                    await Application.Current.MainPage.DisplayAlert("Sucesso", "Login realizado como Administrador!", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Sucesso", $"Bem-vindo(a), {usuario.Nome}! (Administrador)", "OK");
                 }
                 else
                 {
-                    // TODO: Implementar navegação para página de cliente
-                    await Application.Current.MainPage.DisplayAlert("Sucesso", "Login realizado como Cliente!", "OK");
+                    await Application.Current.MainPage.DisplayAlert("Sucesso", $"Bem-vindo(a), {usuario.Nome}! (Cliente)", "OK");
                 }
             }
             catch (Exception ex)
             {
                 await Application.Current.MainPage.DisplayAlert("Erro", $"Erro ao realizar login: {ex.Message}", "OK");
             }
+        }
+
+        // Método de logout
+        private void Logout()
+        {
+            UsuarioAtual.Instance.Logout();
         }
     }
 }
