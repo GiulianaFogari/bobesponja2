@@ -5,7 +5,28 @@
              Title="ClienteView">
     <ScrollView>
         <StackLayout>
-            
+            <Label Text="🍔 Cardápio Bob Burg" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+
+            <StackLayout Padding="20"/>
+            <CollectionView ItemsSource="{Binding CarregarItens}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="5" BorderColor="White" CornerRadius="12">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Nome}" FontSize="18" TextColor="White"/>
+                                <Label Text="{Binding Descricao}" FontSize="14" TextColor="White"/>
+                                <Button Text="Selecionar" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemViewModel}}, Path=SelecionarItemCommand}" 
+                                        CommandParameter="{Binding .}" 
+                                        BackgroundColor="Red" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <StackLayout Padding="20"/>
+            <Button Text="Histórico de Pedidos" Command="{Binding HistoricoCommand}" BackgroundColor="Red" TextColor="White" WidthRequest="350"/>
         </StackLayout>
     </ScrollView>
 </ContentPage>
