@@ -86,12 +86,15 @@ namespace bobesponja2._0.ViewModels
         public ICommand LoginCommand { get; set; }
         public ICommand LogoutCommand { get; set; }
 
+        public ICommand AbrirCadastro { get; set; }
+
         // Construtor
         public UsuarioViewModel()
         {
             CadastrarCommand = new Command(async () => await Cadastrar());
             LoginCommand = new Command(async () => await Login());
             LogoutCommand = new Command(Logout);
+            AbrirCadastro = new Command(() => AbrirView(new Views.UsuarioCadastroView()));
         }
 
         // Método de cadastro

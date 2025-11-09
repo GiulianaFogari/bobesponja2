@@ -1,4 +1,5 @@
-﻿namespace bobesponja2._0
+﻿
+namespace bobesponja2._0
 {
     public partial class App : Application
     {
@@ -9,7 +10,16 @@
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new AppShell());
+            var win = new Window(new AppShell())
+
+            {
+                Width = 500,   // ajuste aqui
+                Height = 800,   // ajuste aqui
+                X = 150,        // opcional: posição na tela
+                Y = 100
+            };
+            return win;
+
         }
     }
 }
