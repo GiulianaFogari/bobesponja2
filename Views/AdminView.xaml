@@ -5,7 +5,46 @@
              Title="AdminView">
     <ScrollView>
         <StackLayout>
-            
+            <Label Text="🍔 Painel do Administrador" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+
+            <StackLayout Padding="10"/>
+            <Label Text="Nome do Item" FontAttributes="Bold" TextColor="White"/>
+            <Entry Text="{Binding Nome}" WidthRequest="350"/>
+
+            <StackLayout Padding="10"/>
+            <Label Text="Descrição" FontAttributes="Bold" TextColor="White"/>
+            <Entry Text="{Binding Descricao}" WidthRequest="350"/>
+
+            <StackLayout Padding="20"/>
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                <Button Text="Cadastrar" Command="{Binding AdicionarCommand}" BackgroundColor="Red" TextColor="White" WidthRequest="178"/>
+                <StackLayout Padding="15"/>
+                <Button Text="Atualizar" Command="{Binding AtualizarCommand}" BackgroundColor="Red" TextColor="White" WidthRequest="178"/>
+            </HorizontalStackLayout>
+
+            <StackLayout Padding="20"/>
+            <Label Text="Itens Cadastrados" FontAttributes="Bold" FontSize="20" TextColor="White" HorizontalOptions="Center"/>
+
+            <CollectionView ItemsSource="{Binding CarregarItensCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame Padding="10" Margin="5"  BorderColor="White" CornerRadius="12">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Nome}" FontSize="18" TextColor="White"/>
+                                <Label Text="{Binding Descricao}" FontSize="14" TextColor="White"/>
+                                <Button Text="Excluir" 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemViewModel}}, Path=ExcluirCommand}" 
+                                        CommandParameter="{Binding .}" 
+                                        BackgroundColor="Red" TextColor="White"/>
+                            </VerticalStackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <StackLayout Padding="20"/>
+            <Button Text="Ver Histórico" Command="{Binding HistoricoCommand}" BackgroundColor="Red" TextColor="White" WidthRequest="350"/>
+
         </StackLayout>
     </ScrollView>
 </ContentPage>
