@@ -7,12 +7,18 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using bobesponja2._0.Services;
 using SQLite;
+using System.Collections.ObjectModel;
 
 namespace bobesponja2._0.ViewModels
 {
     public class UsuarioViewModel : BaseViewModel
     {
         DataBaseService dataBaseService = new DataBaseService();
+
+        public ObservableCollection<string> TiposUsuario { get; } =
+                new ObservableCollection<string>(
+                    Enum.GetNames(typeof(Usuario.TipoUsuario)) // "Administrador", "Cliente"
+                );
 
         // Propriedades da tela
 
@@ -101,6 +107,9 @@ namespace bobesponja2._0.ViewModels
                 return;
             }
 
+            var ok = Enum.TryParse<Usuario.TipoUsuario>(TipoUsuario, out var tipoEnum);
+            if (!ok) tipoEnum = Usuario.TipoUsuario.Cliente;
+
             Usuario usuario = new Usuario
             {
                 Nome = Nome,
@@ -108,7 +117,7 @@ namespace bobesponja2._0.ViewModels
                 Email = Email,
                 Senha = Senha,
                 DataCadastro = DateTime.Now,
-                Tipo = TipoUsuario == "Administrador" ? Usuario.TipoUsuario.Administrador : Usuario.TipoUsuario.Cliente
+                Tipo = tipoEnum
             };
 
             int result = await dataBaseService.AddUsuarioAsync(usuario);

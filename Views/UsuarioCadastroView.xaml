@@ -13,8 +13,10 @@
             <Entry Placeholder="Email" Text="{Binding Email}" Keyboard="Email" />
             <Entry Placeholder="Senha" Text="{Binding Senha}" IsPassword="True" />
 
-            <Picker Title="Tipo de Usuário" ItemsSource="{Binding TiposUsuario}" SelectedItem="{Binding Tipo}" />
+            <Picker Title="Tipo de Usuário" ItemsSource="{Binding TiposUsuario}" SelectedItem="{Binding TipoUsuario, Mode=TwoWay}" />
 
+            <StackLayout Padding="20"/>
+    
             <Button Text="Salvar" Command="{Binding CadastrarCommand}" />
             <Button Text="Voltar ao Login" Command="{Binding VoltarCommand}" />
         </VerticalStackLayout>

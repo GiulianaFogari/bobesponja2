@@ -8,5 +8,6 @@ public partial class UsuarioCadastroView : ContentPage
 	{
 		InitializeComponent();
         BindingContext = new UsuarioViewModel();
+
     }
 }

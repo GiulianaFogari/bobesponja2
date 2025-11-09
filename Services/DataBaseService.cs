@@ -8,6 +8,8 @@ namespace bobesponja2._0.Services
     {
 
         private SQLiteAsyncConnection _db;
+        private bool _isInitialized;
+
 
         public DataBaseService()
         {
@@ -21,14 +23,17 @@ namespace bobesponja2._0.Services
         // Inicializa as tabelas
         public async Task InitAsync()
         {
+            if (_isInitialized) return;
             await _db.CreateTableAsync<Usuario>();
             await _db.CreateTableAsync<Item>();
             await _db.CreateTableAsync<Pedido>();
             await _db.CreateTableAsync<Historico>();
+            _isInitialized = true;
         }
 
         public async Task<int> AddUsuarioAsync(Usuario usuario)
         {
+            await InitAsync();
             return await _db.InsertAsync(usuario);
         }
 
@@ -41,41 +46,49 @@ namespace bobesponja2._0.Services
 
         public async Task<List<Usuario>> GetUsuariosAsync()
         {
+            await InitAsync();
             return await _db.Table<Usuario>().ToListAsync();
         }
 
         public async Task<int> AddItemAsync(Item item)
         {
+            await InitAsync();
             return await _db.InsertAsync(item);
         }
 
         public async Task<int> UpdateItemAsync(Item item)
         {
+            await InitAsync();
             return await _db.UpdateAsync(item);
         }
 
         public async Task<int> DeleteItemAsync(Item item)
         {
+            await InitAsync();
             return await _db.DeleteAsync(item);
         }
 
         public async Task<List<Item>> GetItensAsync()
         {
+            await InitAsync();
             return await _db.Table<Item>().ToListAsync();
         }
 
         public async Task<int> AddPedidoAsync(Pedido pedido)
         {
+            await InitAsync();
             return await _db.InsertAsync(pedido);
         }
 
         public async Task<List<Pedido>> GetPedidosAsync()
         {
+            await InitAsync();
             return await _db.Table<Pedido>().ToListAsync();
         }
 
         public async Task<List<Pedido>> GetPedidosByUsuarioAsync(int usuarioId)
         {
+            await InitAsync();
             return await _db.Table<Pedido>()
                 .Where(pedido => pedido.UsuarioId == usuarioId)
                 .ToListAsync();
@@ -84,11 +97,13 @@ namespace bobesponja2._0.Services
         // Métodos para o Histórico
         public async Task<int> AddHistoricoAsync(Historico historico)
         {
+            await InitAsync();
             return await _db.InsertAsync(historico);
         }
 
         public async Task<List<Historico>> GetHistoricoAsync()
         {
+            await InitAsync();
             return await _db.Table<Historico>()
                 .OrderByDescending(h => h.DataHora)
                 .ToListAsync();
@@ -96,6 +111,7 @@ namespace bobesponja2._0.Services
 
         public async Task<List<Historico>> GetHistoricoByUsuarioAsync(int usuarioId)
         {
+            await InitAsync();
             return await _db.Table<Historico>()
                 .Where(h => h.UsuarioId == usuarioId)
                 .OrderByDescending(h => h.DataHora)
