@@ -15,8 +15,8 @@ namespace bobesponja2._0
             {
                 Width = 500,   // ajuste aqui
                 Height = 800,   // ajuste aqui
-                X = 150,        // opcional: posição na tela
-                Y = 100
+                X = 0,        // opcional: posição na tela
+                Y = 0
             };
             return win;
 

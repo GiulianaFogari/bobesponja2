@@ -15,16 +15,7 @@ namespace bobesponja2._0.ViewModels
         DataBaseService dataBaseService = new DataBaseService();
 
         // Propriedades da tela
-        private int _id;
-        public int Id
-        {
-            get => _id;
-            set
-            {
-                _id = value;
-                OnPropertyChanged();
-            }
-        }
+
 
         private string _nome;
         public string Nome
