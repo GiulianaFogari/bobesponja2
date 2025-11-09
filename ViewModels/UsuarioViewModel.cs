@@ -159,10 +159,12 @@ namespace bobesponja2._0.ViewModels
                 if (UsuarioAtual.Instance.IsAdmin)
                 {
                     await Application.Current.MainPage.DisplayAlert("Sucesso", $"Bem-vindo(a), {usuario.Nome}! (Administrador)", "OK");
+                    AbrirView(new Views.AdminView());
                 }
                 else
                 {
                     await Application.Current.MainPage.DisplayAlert("Sucesso", $"Bem-vindo(a), {usuario.Nome}! (Cliente)", "OK");
+                    AbrirView(new Views.ClienteView());
                 }
             }
             catch (Exception ex)

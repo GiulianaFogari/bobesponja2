@@ -5,7 +5,7 @@
              Title="ClienteView">
     <ScrollView>
         <StackLayout>
-            <Label Text="🍔 Cardápio Bob Burg" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+            <Label Text="Cardápio Bob Burg" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
 
             <StackLayout Padding="20"/>
             <CollectionView ItemsSource="{Binding CarregarItens}">
@@ -16,8 +16,7 @@
                                 <Label Text="{Binding Nome}" FontSize="18" TextColor="White"/>
                                 <Label Text="{Binding Descricao}" FontSize="14" TextColor="White"/>
                                 <Button Text="Selecionar" 
-                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ItemViewModel}}, Path=SelecionarItemCommand}" 
-                                        CommandParameter="{Binding .}" 
+                                        Command="{Binding SelecionarItemCommand}" 
                                         BackgroundColor="Red" TextColor="White"/>
                             </VerticalStackLayout>
                         </Frame>
