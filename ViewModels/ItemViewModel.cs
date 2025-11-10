@@ -82,6 +82,18 @@ namespace bobesponja2._0.ViewModels
         // Lista de histórico
         public ObservableCollection<Historico> Historico { get; set; }
 
+        // Propriedade para controlar visibilidade do histórico
+        private bool _historicoVisivel = false;
+        public bool HistoricoVisivel
+        {
+            get => _historicoVisivel;
+            set
+            {
+                _historicoVisivel = value;
+                OnPropertyChanged();
+            }
+        }
+
         // Item selecionado
         private Item _itemSelecionado;
         public Item ItemSelecionado
@@ -108,21 +120,30 @@ namespace bobesponja2._0.ViewModels
         public ICommand AtualizarCommand { get; set; }
         public ICommand ExcluirCommand { get; set; }
         public ICommand CarregarItensCommand { get; set; }
-        public ICommand SelecionarItemCommand { get; set; } // NOVO
-        public ICommand CarregarHistoricoCommand { get; set; } // NOVO
+        public ICommand SelecionarItemCommand { get; set; }
+        public ICommand CarregarHistoricoCommand { get; set; }
+        public ICommand LogoutCommand { get; set; }
+        public ICommand SelecionarParaEdicaoCommand { get; set; }
+        public ICommand ExcluirItemCommand { get; set; }
+        public ICommand LimparCamposCommand { get; set; }
 
         // Construtor
         public ItemViewModel()
         {
             Itens = new ObservableCollection<Item>();
-            Historico = new ObservableCollection<Historico>(); // NOVA LISTA
+            Historico = new ObservableCollection<Historico>();
             
             AdicionarCommand = new Command(async () => await Adicionar());
             AtualizarCommand = new Command(async () => await Atualizar());
             ExcluirCommand = new Command(async () => await Excluir());
             CarregarItensCommand = new Command(async () => await CarregarItens());
-            SelecionarItemCommand = new Command<Item>(async (item) => await SelecionarItem(item)); // NOVO
-            CarregarHistoricoCommand = new Command(async () => await CarregarHistorico()); // NOVO
+            SelecionarItemCommand = new Command<Item>(async (item) => await SelecionarItem(item));
+            CarregarHistoricoCommand = new Command(async () => await CarregarHistorico());
+            LogoutCommand = new Command(Logout);
+            
+            SelecionarParaEdicaoCommand = new Command<Item>(SelecionarParaEdicao);
+            ExcluirItemCommand = new Command<Item>(async (item) => await ExcluirItemEspecifico(item));
+            LimparCamposCommand = new Command(LimparCampos);
 
             Task.Run(async () => await CarregarItens());
         }
@@ -138,28 +159,97 @@ namespace bobesponja2._0.ViewModels
 
             if (item == null) return;
 
-            // Criar registro no histórico
-            var historico = new Historico
+            // Verifica se o item esta disponivel
+            if (item.Status == Item.StatusItem.Indisponível)
             {
-                UsuarioId = UsuarioAtual.Instance.Usuario.Id,
-                ItemId = item.Id,
-                DataHora = DateTime.Now,
-                NomeUsuario = UsuarioAtual.Instance.Usuario.Nome,
-                NomeItem = item.Nome
-            };
+                await Application.Current.MainPage.DisplayAlert("Item Indisponível", 
+                    $"O item '{item.Nome}' não está disponível no momento.\n\nTente novamente mais tarde.", "OK");
+                return;
+            }
 
-            await dataBaseService.AddHistoricoAsync(historico);
-            
-            await Application.Current.MainPage.DisplayAlert("Sucesso", 
-                $"Item '{item.Nome}' selecionado com sucesso!", "OK");
+            bool confirmar = await Application.Current.MainPage.DisplayAlert(
+                "Confirmar Seleção", 
+                $"Deseja realmente selecionar o item '{item.Nome}'?\n\nPreço: {item.Preco}\nStatus: {item.Status}", 
+                "Sim", 
+                "Cancelar");
 
-            // Atualizar histórico
-            await CarregarHistorico();
+            if (!confirmar) return; // Se cancelar, não faz nada
+
+            try
+            {
+                // Criar registro no histórico
+                var historico = new Historico
+                {
+                    UsuarioId = UsuarioAtual.Instance.Usuario.Id,
+                    ItemId = item.Id,
+                    DataHora = DateTime.Now,
+                    NomeUsuario = UsuarioAtual.Instance.Usuario.Nome,
+                    NomeItem = item.Nome
+                };
+
+                await dataBaseService.AddHistoricoAsync(historico);
+                
+                await Application.Current.MainPage.DisplayAlert("Sucesso", 
+                    $"Item '{item.Nome}' selecionado com sucesso!\n\nRegistrado em: {DateTime.Now:dd/MM/yyyy HH:mm}", "OK");
+
+                // Atualizar histórico se estiver visível
+                if (HistoricoVisivel)
+                {
+                    await CarregarHistoricoSemToggle();
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Erro", 
+                    $"Erro ao registrar seleção: {ex.Message}", "OK");
+            }
+        }
+
+        // Método auxiliar para carregar histórico sem fazer toggle
+        private async Task CarregarHistoricoSemToggle()
+        {
+            try
+            {
+                List<Historico> historicos;
+
+                if (IsAdmin)
+                {
+                    historicos = await dataBaseService.GetHistoricoAsync();
+                }
+                else
+                {
+                    if (UsuarioAtual.Instance.Usuario != null)
+                    {
+                        historicos = await dataBaseService.GetHistoricoByUsuarioAsync(
+                            UsuarioAtual.Instance.Usuario.Id);
+                    }
+                    else
+                    {
+                        historicos = new List<Historico>();
+                    }
+                }
+
+                Historico.Clear();
+                foreach (var hist in historicos)
+                {
+                    Historico.Add(hist);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Erro", 
+                    $"Erro ao carregar histórico: {ex.Message}", "OK");
+            }
         }
 
         // Método para carregar histórico
         private async Task CarregarHistorico()
         {
+            // Toggle da visibilidade
+            HistoricoVisivel = !HistoricoVisivel;
+            
+            if (!HistoricoVisivel) return; // Se escondeu, não precisa carregar
+            
             try
             {
                 List<Historico> historicos;
@@ -331,6 +421,51 @@ namespace bobesponja2._0.ViewModels
             }
         }
 
+        // Método para excluir item específico
+        private async Task ExcluirItemEspecifico(Item item)
+        {
+            if (!IsAdmin)
+            {
+                await Application.Current.MainPage.DisplayAlert("Erro", "Apenas administradores podem excluir itens!", "OK");
+                return;
+            }
+
+            if (item == null) return;
+
+            bool confirmar = await Application.Current.MainPage.DisplayAlert(
+                "Confirmar Exclusão", 
+                $"Deseja realmente excluir o item '{item.Nome}'?", 
+                "Sim", 
+                "Cancelar");
+
+            if (!confirmar) return;
+
+            try
+            {
+                int result = await dataBaseService.DeleteItemAsync(item);
+
+                if (result > 0)
+                {
+                    await Application.Current.MainPage.DisplayAlert("Sucesso", "Item excluído com sucesso!", "OK");
+                    await CarregarItens();
+                    
+                    // Se o item excluído estava sendo editado, limpar campos
+                    if (ItemSelecionado?.Id == item.Id)
+                    {
+                        LimparCampos();
+                    }
+                }
+                else
+                {
+                    await Application.Current.MainPage.DisplayAlert("Erro", "Falha ao excluir o item!", "OK");
+                }
+            }
+            catch (Exception ex)
+            {
+                await Application.Current.MainPage.DisplayAlert("Erro", $"Erro ao excluir item: {ex.Message}", "OK");
+            }
+        }
+
         // Método para carregar itens
         private async Task CarregarItens()
         {
@@ -351,7 +486,7 @@ namespace bobesponja2._0.ViewModels
         }
 
         // Método para limpar campos
-        private void LimparCampos()
+        public void LimparCampos()
         {
             Id = 0;
             Nome = string.Empty;
@@ -359,6 +494,23 @@ namespace bobesponja2._0.ViewModels
             Status = string.Empty;
             Preco = string.Empty;
             ItemSelecionado = null;
+        }
+
+        // Método Logout
+        private async void Logout()
+        {
+            UsuarioAtual.Instance.Logout();
+            await Application.Current.MainPage.DisplayAlert("Sucesso", "Logout realizado com sucesso!", "OK");
+            await Application.Current.MainPage.Navigation.PopToRootAsync();
+        }
+
+        // Método para selecionar item para edição
+        private void SelecionarParaEdicao(Item item)
+        {
+            if (item != null)
+            {
+                ItemSelecionado = item; // Isso vai automaticamente popular os campos
+            }
         }
     }
 }

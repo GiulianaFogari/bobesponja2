@@ -2,30 +2,164 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="bobesponja2._0.Views.ClienteView"
-             Title="ClienteView">
+             x:Name="thisPage"
+             Title="Cliente - Bob Burg"
+             BackgroundImageSource="back3.png">
+    
     <ScrollView>
         <StackLayout>
-            <Label Text="Cardápio Bob Burg" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+            
+            <Label Text="Área do Cliente" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
+            
+            <StackLayout Padding="10"/>
+            <Frame BackgroundColor="Transparent" BorderColor="White" CornerRadius="10" Padding="15" Margin="10">
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Bem-vindo," 
+                           FontSize="16" 
+                           TextColor="White" 
+                           VerticalOptions="Center"/>
+                    <Label Text="{Binding NomeUsuarioLogado}" 
+                           FontSize="16" 
+                           FontAttributes="Bold"
+                           TextColor="White" 
+                           VerticalOptions="Center"/>
+                    <Button Text="Sair" 
+                            Command="{Binding LogoutCommand}"
+                            BackgroundColor="Red"
+                            TextColor="White"
+                            CornerRadius="5"
+                            HorizontalOptions="EndAndExpand"
+                            Padding="10,5"/>
+                </StackLayout>
+            </Frame>
+
+            <StackLayout Padding="10"/>
+            <Button Text="Atualizar Cardápio" 
+                    Command="{Binding CarregarItensCommand}"
+                    BackgroundColor="Red" 
+                    TextColor="White"
+                    WidthRequest="350"/>
 
             <StackLayout Padding="20"/>
-            <CollectionView ItemsSource="{Binding CarregarItens}">
+            <Label Text="Cardápio Disponível" 
+                   FontSize="20" 
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   HorizontalOptions="Center"/>
+
+            <CollectionView ItemsSource="{Binding Itens}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame Padding="10" Margin="5" BorderColor="White" CornerRadius="12">
+                        <Frame Padding="10" 
+                               Margin="5" 
+                               BorderColor="White" 
+                               CornerRadius="12">
                             <VerticalStackLayout>
-                                <Label Text="{Binding Nome}" FontSize="18" TextColor="White"/>
-                                <Label Text="{Binding Descricao}" FontSize="14" TextColor="White"/>
-                                <Button Text="Selecionar" 
-                                        Command="{Binding SelecionarItemCommand}" 
-                                        BackgroundColor="Red" TextColor="White"/>
+                                <Label Text="{Binding Nome}" 
+                                       FontSize="18" 
+                                       FontAttributes="Bold"
+                                       TextColor="White"/>
+
+                                <Label Text="{Binding Descricao}" 
+                                       FontSize="14" 
+                                       TextColor="White"
+                                       Margin="0,5"/>
+
+                                <StackLayout Orientation="Horizontal" 
+                                             Margin="0,5">
+                                    <Label Text="Preço:" 
+                                           FontSize="14" 
+                                           TextColor="White"/>
+                                    <Label Text="{Binding Preco}" 
+                                           FontSize="14" 
+                                           FontAttributes="Bold"
+                                           TextColor="White"/>
+                                </StackLayout>
+
+                                <StackLayout Orientation="Horizontal" 
+                                             Margin="0,5">
+                                    <Label Text="Status:" 
+                                           FontSize="14" 
+                                           TextColor="White"/>
+                                    <Label Text="{Binding Status}" 
+                                           FontSize="14" 
+                                           TextColor="White"/>
+                                </StackLayout>
+
+                                <Button Text="Selecionar Item" 
+                                        Command="{Binding Source={x:Reference Name=thisPage}, Path=BindingContext.SelecionarItemCommand}"
+                                        CommandParameter="{Binding .}"
+                                        BackgroundColor="Red" 
+                                        TextColor="White"
+                                        Margin="0,10,0,0"/>
                             </VerticalStackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
+                
+                <CollectionView.EmptyView>
+                    <StackLayout>
+                        <Label Text="Nenhum item disponível no momento" 
+                               FontSize="16" 
+                               HorizontalOptions="Center"
+                               TextColor="White"
+                               Margin="20"/>
+                        <Label Text="Toque em 'Atualizar Cardápio' para verificar novamente" 
+                               FontSize="14" 
+                               HorizontalOptions="Center"
+                               TextColor="White"/>
+                    </StackLayout>
+                </CollectionView.EmptyView>
             </CollectionView>
 
             <StackLayout Padding="20"/>
-            <Button Text="Histórico de Pedidos" Command="{Binding HistoricoCommand}" BackgroundColor="Red" TextColor="White" WidthRequest="350"/>
+            <Button Text="Meu Histórico de Pedidos" 
+                    Command="{Binding CarregarHistoricoCommand}"
+                    BackgroundColor="Red" 
+                    TextColor="White"
+                    WidthRequest="350"/>
+
+            <StackLayout IsVisible="{Binding HistoricoVisivel}">
+                <StackLayout Padding="20"/>
+                <Label Text="Seu Histórico" 
+                       FontSize="20" 
+                       FontAttributes="Bold"
+                       TextColor="White"
+                       HorizontalOptions="Center"/>
+
+                <CollectionView ItemsSource="{Binding Historico}" 
+                                MaximumHeightRequest="400">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Frame Padding="10" 
+                                   Margin="5" 
+                                   BorderColor="White" 
+                                   CornerRadius="12">
+                                <VerticalStackLayout>
+                                    <Label Text="{Binding NomeItem}" 
+                                           FontSize="16" 
+                                           FontAttributes="Bold"
+                                           TextColor="White"/>
+                                    
+                                    <Label Text="{Binding DataHora, StringFormat='{0:dd/MM/yyyy HH:mm}'}" 
+                                           FontSize="14" 
+                                           TextColor="White"
+                                           Margin="0,5,0,0"/>
+                                </VerticalStackLayout>
+                            </Frame>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                    
+                    <CollectionView.EmptyView>
+                        <Label Text="Você ainda não fez nenhuma seleção" 
+                               FontSize="14" 
+                               HorizontalOptions="Center"
+                               TextColor="White"
+                               Margin="20"/>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </StackLayout>
+
         </StackLayout>
     </ScrollView>
 </ContentPage>
