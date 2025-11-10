@@ -1,24 +1,104 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="bobesponja2._0.Views.UsuarioCadastroView">
-    
-    
-    <ScrollView Padding="30">
-        <VerticalStackLayout Spacing="15">
-            <Label Text="Cadastro de Usuário" FontSize="28" HorizontalOptions="Center" />
+             x:Class="bobesponja2._0.Views.UsuarioCadastroView"
+             BackgroundImageSource="back5.png">
 
-            <Entry Placeholder="Nome" Text="{Binding Nome}" />
-            <Entry Placeholder="CPF" Text="{Binding Cpf}" />
-            <Entry Placeholder="Email" Text="{Binding Email}" Keyboard="Email" />
-            <Entry Placeholder="Senha" Text="{Binding Senha}" IsPassword="True" />
 
-            <Picker Title="Tipo de Usuário" ItemsSource="{Binding TiposUsuario}" SelectedItem="{Binding TipoUsuario, Mode=TwoWay}" />
+    <ScrollView>
+        <StackLayout Padding="20">
 
-            <StackLayout Padding="20"/>
-    
-            <Button Text="Salvar" Command="{Binding CadastrarCommand}" />
-            <Button Text="Voltar ao Login" Command="{Binding VoltarCommand}" />
-        </VerticalStackLayout>
+            <!-- Título -->
+            <Label Text="Cadastro de Usuário"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="White"/>
+
+            <StackLayout Padding="10"/>
+
+            <!-- Card do formulário -->
+            <Frame BackgroundColor="Transparent"
+                   BorderColor="DarkCyan"
+                   CornerRadius="10"
+                   Padding="15"
+                   Margin="10">
+
+                <VerticalStackLayout Spacing="10">
+
+                    <!-- Nome -->
+                    <Label Text="Nome" TextColor="White" FontAttributes="Bold"/>
+                    <Grid RowDefinitions="Auto,2">
+                        <Entry Text="{Binding Nome}"
+                               Placeholder="Seu nome"
+                               TextColor="White"
+                               PlaceholderColor="#80FFFFFF"
+                               BackgroundColor="Transparent"/>
+                        
+                    </Grid>
+
+                    <!-- CPF -->
+                    <Label Text="CPF" TextColor="White" FontAttributes="Bold"/>
+                    <Grid RowDefinitions="Auto,2">
+                        <Entry Text="{Binding Cpf}"
+                               Placeholder="000.000.000-00"
+                               TextColor="White"
+                               PlaceholderColor="#80FFFFFF"
+                               BackgroundColor="Transparent"
+                               Keyboard="Numeric"/>
+                        
+                    </Grid>
+
+                    <!-- Email -->
+                    <Label Text="E-mail" TextColor="White" FontAttributes="Bold"/>
+                    <Grid RowDefinitions="Auto,2">
+                        <Entry Text="{Binding Email}"
+                               Placeholder="seuemail@exemplo.com"
+                               TextColor="White"
+                               PlaceholderColor="#80FFFFFF"
+                               BackgroundColor="Transparent"
+                               Keyboard="Email"/>
+                        
+                    </Grid>
+
+                    <!-- Senha -->
+                    <Label Text="Senha" TextColor="White" FontAttributes="Bold"/>
+                    <Grid RowDefinitions="Auto,2">
+                        <Entry Text="{Binding Senha}"
+                               Placeholder="Sua senha"
+                               IsPassword="True"
+                               TextColor="White"
+                               PlaceholderColor="#80FFFFFF"
+                               BackgroundColor="Transparent"/>
+                       
+                    </Grid>
+
+                    <!-- Tipo de Usuário -->
+                    <Label Text="Tipo de Usuário" TextColor="White" FontAttributes="Bold"/>
+                    <Picker Title="Selecione"
+                            ItemsSource="{Binding TiposUsuario}"
+                            SelectedItem="{Binding TipoUsuario, Mode=TwoWay}"
+                            TitleColor="White"
+                            TextColor="White" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <StackLayout Padding="10"/>
+
+            <!-- Botões (estilo do ClienteView) -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="10">
+                <Button Text="Salvar"
+                        Command="{Binding CadastrarCommand}"
+                        BackgroundColor="Red"
+                        TextColor="White"
+                        WidthRequest="170"/>
+                <Button Text="Voltar ao Login"
+                        Command="{Binding VoltarCommand}"
+                        BackgroundColor="Red"
+                        TextColor="White"
+                        WidthRequest="170"/>
+            </HorizontalStackLayout>
+
+        </StackLayout>
     </ScrollView>
 </ContentPage>

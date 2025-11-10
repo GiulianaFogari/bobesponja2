@@ -12,7 +12,7 @@
             <Label Text="Área do Cliente" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" TextColor="White"/>
             
             <StackLayout Padding="10"/>
-            <Frame BackgroundColor="Black" BorderColor="White" CornerRadius="10" Padding="15" Margin="10">
+            <Frame BackgroundColor="Transparent" BorderColor="DarkCyan" CornerRadius="10" Padding="15" Margin="10">
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Bem-vindo," 
                            FontSize="16" 
@@ -52,7 +52,8 @@
                     <DataTemplate>
                         <Frame Padding="10" 
                                Margin="5" 
-                               BorderColor="White" 
+                               BackgroundColor="Transparent"
+                               BorderColor="DarkCyan"
                                CornerRadius="12">
                             <VerticalStackLayout>
                                 <Label Text="{Binding Nome}" 
@@ -133,7 +134,8 @@
                         <DataTemplate>
                             <Frame Padding="10" 
                                    Margin="5" 
-                                   BorderColor="White" 
+                                   BackgroundColor="Transparent"
+                                   BorderColor="DarkCyan" 
                                    CornerRadius="12">
                                 <VerticalStackLayout>
                                     <Label Text="{Binding NomeItem}" 

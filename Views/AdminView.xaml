@@ -11,7 +11,7 @@
 
             <!-- Nome do usuario admin logado -->
             <StackLayout Padding="10"/>
-            <Frame BackgroundColor="Transparent" BorderColor="White" CornerRadius="10" Padding="15" Margin="10">
+            <Frame BackgroundColor="Transparent" BorderColor="DarkCyan" CornerRadius="10" Padding="15" Margin="10">
                 <StackLayout Orientation="Horizontal">
                     <Label Text="Administrador:" 
                            FontSize="16" 
@@ -77,7 +77,8 @@
                     <DataTemplate>
                         <Frame Padding="10" 
                                Margin="5"  
-                               BorderColor="White" 
+                              BackgroundColor="Transparent"
+                                BorderColor="DarkCyan" 
                                CornerRadius="12">
                             <VerticalStackLayout>
                                 <Label Text="{Binding Nome}" 
@@ -139,7 +140,7 @@
             <StackLayout Padding="20"/>
             <Button Text="Ver Histórico de Seleções" 
                     Command="{Binding CarregarHistoricoCommand}" 
-                    BackgroundColor="Purple" 
+                    BackgroundColor="Blue" 
                     TextColor="White" 
                     WidthRequest="350"/>
 
@@ -160,9 +161,10 @@
                         <DataTemplate>
                             <Frame Padding="15" 
                                    Margin="5" 
-                                   BorderColor="Purple" 
+                                   BackgroundColor="Transparent"
+                                    BorderColor="DarkCyan"
                                    CornerRadius="8"
-                                   BackgroundColor="#1a1a1a">
+                                  >
                                 <VerticalStackLayout Spacing="5">
                                     <StackLayout Orientation="Horizontal">
                                         <Label Text="Cliente:" 
