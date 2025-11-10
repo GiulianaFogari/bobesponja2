@@ -13,7 +13,7 @@
 
             <StackLayout Padding="10"/>
             <Label Text="Senha" FontAttributes="Bold"/>
-            <Entry Text="{Binding Senha}" WidthRequest="350"/>
+            <Entry Text="{Binding Senha}" WidthRequest="350" IsPassword="True"/>
          
             
             <StackLayout Padding="20"/>
