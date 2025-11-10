@@ -7,6 +7,6 @@ public partial class AdminView : ContentPage
 	public AdminView()
 	{
 		InitializeComponent();
-        BindingContext = new UsuarioViewModel();
+        BindingContext = new ItemViewModel();
     }
 }

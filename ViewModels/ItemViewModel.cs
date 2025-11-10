@@ -9,6 +9,11 @@ namespace bobesponja2._0.ViewModels
     {
         DataBaseService dataBaseService = new DataBaseService();
 
+        public ObservableCollection<string> StatusItem { get; } =
+                new ObservableCollection<string>(
+                    Enum.GetNames(typeof(Item.StatusItem)) 
+                );
+
         // Propriedades da tela
         private int _id;
         public int Id
@@ -84,6 +89,7 @@ namespace bobesponja2._0.ViewModels
             get => _itemSelecionado;
             set
             {
+
                 _itemSelecionado = value;
                 OnPropertyChanged();
                 if (value != null)
@@ -91,7 +97,7 @@ namespace bobesponja2._0.ViewModels
                     Id = value.Id;
                     Nome = value.Nome;
                     Descricao = value.Descricao;
-                    Status = value.Status;
+                    Status = value.Status.ToString();
                     Preco = value.Preco;
                 }
             }
@@ -207,12 +213,14 @@ namespace bobesponja2._0.ViewModels
                 await Application.Current.MainPage.DisplayAlert("Erro", "Preencha todos os campos obrigatórios!", "OK");
                 return;
             }
+            var ok = Enum.TryParse<Item.StatusItem>(Status, out var tipoEnum);
+            if (!ok) tipoEnum = Item.StatusItem.Disponível;
 
             Item item = new Item
             {
                 Nome = Nome,
                 Descricao = Descricao,
-                Status = Status,
+                Status = tipoEnum,
                 Preco = Preco
             };
 
@@ -256,12 +264,15 @@ namespace bobesponja2._0.ViewModels
 
             try
             {
+
+                var ok = Enum.TryParse<Item.StatusItem>(Status, out var tipoEnum);
+                if (!ok) tipoEnum = Item.StatusItem.Disponível;
                 Item item = new Item
                 {
                     Id = Id,
                     Nome = Nome,
                     Descricao = Descricao,
-                    Status = Status,
+                    Status = tipoEnum,
                     Preco = Preco
                 };
 
